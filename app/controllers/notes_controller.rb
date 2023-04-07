@@ -4,7 +4,8 @@ class NotesController < ApplicationController
 
   # GET /notes or /notes.json
   def index
-    @notes = Note.find_by user: @user.id
+    @notes = Note.where user: @user.id
+    render json: @notes
   end
 
   # GET /notes/1 or /notes/1.json
@@ -24,40 +25,34 @@ class NotesController < ApplicationController
   # POST /notes or /notes.json
   def create
     @note = Note.new(note_params)
-    @note.user = @user.id
+    @note.user = @user
 
-    respond_to do |format|
       if @note.save
-        format.html { redirect_to note_url(@note), notice: "Note was successfully created." }
-        format.json { render :show, status: :created, location: @note }
+        render json: @note, status: :created, location: @note 
       else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @note.errors, status: :unprocessable_entity }
+       
+        render json: @note.errors, status: :unprocessable_entity
       end
-    end
+   
   end
 
   # PATCH/PUT /notes/1 or /notes/1.json
   def update
-    respond_to do |format|
+   
       if @note.update(note_params)
-        format.html { redirect_to note_url(@note), notice: "Note was successfully updated." }
-        format.json { render :show, status: :ok, location: @note }
+       
+        render json: @note 
       else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @note.errors, status: :unprocessable_entity }
+        
+        render json: @note.errors, status: :unprocessable_entity 
       end
-    end
   end
 
   # DELETE /notes/1 or /notes/1.json
   def destroy
-    @note.destroy
 
-    respond_to do |format|
-      format.html { redirect_to notes_url, notice: "Note was successfully destroyed." }
-      format.json { head :no_content }
-    end
+    @note.destroy
+  
   end
 
   private
